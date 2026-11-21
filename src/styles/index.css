@@ -1,0 +1,254 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  :root.dark {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-slate-50 font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+    background-image:
+      radial-gradient(60rem 40rem at 0% -10%, rgb(99 102 241 / 0.09), transparent 60%),
+      radial-gradient(50rem 35rem at 100% 0%, rgb(217 70 239 / 0.07), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(60rem 40rem at 0% -10%, rgb(99 102 241 / 0.14), transparent 60%),
+      radial-gradient(50rem 35rem at 100% 0%, rgb(217 70 239 / 0.08), transparent 60%);
+  }
+
+  ::selection {
+    @apply bg-indigo-200 text-indigo-950;
+  }
+}
+
+@layer components {
+  .brand-mark {
+    @apply inline-flex items-center justify-center bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/25 ring-1 ring-inset ring-white/20;
+  }
+
+  /* Chat bubbles: tutor = deep purple, student = soft grey (tail corner points at the avatar). */
+  .bubble-bot {
+    @apply rounded-2xl rounded-bl-md bg-gradient-to-br from-purple-950 via-purple-900 to-violet-900 px-4 py-3 text-violet-50 shadow-lg shadow-purple-900/20 sm:px-5 sm:py-4;
+  }
+
+  .bubble-user {
+    @apply whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-slate-200/80 px-4 py-2.5 text-[15px] leading-relaxed text-slate-800 dark:bg-slate-800 dark:text-slate-100;
+  }
+
+  .avatar-bot {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-purple-800 text-white shadow-md shadow-purple-900/25 ring-2 ring-white dark:ring-slate-900;
+  }
+
+  .avatar-user {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-orange-500 text-white shadow-md shadow-orange-500/25 ring-2 ring-white dark:ring-slate-900;
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme("colors.slate.300") transparent;
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(15 23 42 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(15 23 42 / 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background-color: rgb(226 232 240 / 0.8);
+  }
+
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.7), transparent);
+    animation: skeleton-sweep 1.4s ease-in-out infinite;
+  }
+
+  .typing-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  /* Typing indicator, shimmer label and caret all sit on the purple tutor bubble. */
+  .typing-dots > span {
+    width: 7px;
+    height: 7px;
+    border-radius: 9999px;
+    background-color: theme("colors.violet.200");
+    animation: typing-bounce 1.2s ease-in-out infinite;
+  }
+
+  .typing-dots > span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .typing-dots > span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .shimmer-text {
+    background-image: linear-gradient(
+      90deg,
+      theme("colors.violet.300") 0%,
+      theme("colors.white") 40%,
+      theme("colors.violet.300") 80%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer-text 2.2s linear infinite;
+  }
+
+  /* Blinking caret at the end of an answer that is still streaming. */
+  .is-streaming > :last-child:not(ul, ol, pre, table)::after,
+  .is-streaming > :is(ul, ol):last-child > li:last-child::after {
+    content: "";
+    display: inline-block;
+    width: 0.45em;
+    height: 1.05em;
+    margin-left: 0.2em;
+    vertical-align: -0.15em;
+    border-radius: 2px;
+    background-color: theme("colors.violet.200");
+    animation: caret-blink 1s steps(2, start) infinite;
+  }
+
+  .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block: 0.25rem;
+  }
+}
+
+/* Night-mode overrides for the custom components above. Kept outside @layer so they are never purged. */
+.dark .scrollbar-thin {
+  scrollbar-color: theme("colors.slate.700") transparent;
+}
+
+.dark .bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+}
+
+.dark .skeleton {
+  background-color: rgb(30 41 59 / 0.8);
+}
+
+.dark .skeleton::after {
+  background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent);
+}
+
+/* Applied imperatively (CitationChip / ThemeToggle), so these live outside @layer (never purged). */
+.source-flash {
+  animation: source-flash 1.6s ease-out;
+}
+
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    fill 300ms ease,
+    box-shadow 300ms ease,
+    transform 300ms ease-out !important;
+  transition-delay: 0s !important;
+}
+
+@keyframes skeleton-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer-text {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes caret-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes source-flash {
+  0%,
+  35% {
+    box-shadow:
+      0 0 0 2px theme("colors.indigo.500"),
+      0 0 0 7px rgb(99 102 241 / 0.2);
+  }
+  100% {
+    box-shadow:
+      0 0 0 2px transparent,
+      0 0 0 7px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
